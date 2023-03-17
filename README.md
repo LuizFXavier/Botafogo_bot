@@ -1,0 +1,1 @@
+É necessário inserir uma senha de app "senha" como variável de ambiente para correto envio dos e-mails.
