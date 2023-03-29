@@ -2,17 +2,46 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.edge.options import Options
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 from Partida import Partida
+from time import sleep
+import datetime
 options = Options()
 options.add_experimental_option("detach", True)
 delay = 3
 
-nav = webdriver.Edge(options=options)
-nav.get("https://www.google.com/search?q=botafogo+ultimo+jogo&ei=t7wTZNvFLO3K1sQP24CH8AQ&ved=0ahUKEwib_enS4uH9AhVtpZUCHVvAAU4Q4dUDCA8&uact=5&oq=botafogo+ultimo+jogo&gs_lcp=Cgxnd3Mtd2l6LXNlcnAQAzIKCAAQgAQQRhD9ATIGCAAQFhAeMgYIABAWEB4yBggAEBYQHjIGCAAQFhAeMgYIABAWEB4yBggAEBYQHjIGCAAQFhAeMgYIABAWEB4yBggAEBYQHjoECAAQRzoLCAAQgAQQsQMQgwE6CwguEIMBELEDEIAEOgQIABADOggILhCxAxCABDoKCAAQsQMQgwEQQzoICAAQsQMQgwE6BQguEIAEOgUIABCABDoICAAQFhAeEA86CAgAEBYQHhAKSgQIQRgASgUIQBIBMVBGWOYaYLcdaABwAngAgAHIA4gBxBGSAQkwLjguMi4wLjGYAQCgAQHIAQjAAQE&sclient=gws-wiz-serp")
 
-# partida = Partida()
+def pesquisar():
+    nav = webdriver.Edge(options=options)
+    nav.get("https://onefootball.com/pt-br/time/botafogo-1792/resultados")
+    partida = Partida()
 
-pontBotafogo = nav.find_element(By.XPATH,"/html/body/div[7]/div/div[11]/div/div[2]/div[2]/div/div/div[1]/div/block-component/div/div[1]/div/div/div/div[1]/div/div/div/div/div/div/div[3]/div/div/div/div/div/div[1]/div[1]/div[2]/div[1]/div/div[2]/div/div/div[1]")
-pontAdversario = nav.find_element(By.XPATH,"/html/body/div[7]/div/div[11]/div/div[2]/div[2]/div/div/div[1]/div/block-component/div/div[1]/div/div/div/div[1]/div/div/div/div/div/div/div[3]/div/div/div/div/div/div[1]/div[1]/div[2]/div[1]/div/div[2]/div/div/div[3]")
+    ultimaData = open("./ultimo.txt","r").readline()
+    try:
+        partida.data = WebDriverWait(nav, delay).until(EC.presence_of_element_located((By.XPATH, "/html/body/of-root/div/main/of-entity-stream/section/of-xpa-layout-entity/section[6]/of-xpa-switch-entity/section/of-match-cards-lists-appender/div/of-match-cards-list[1]/ul/li[1]/of-match-card/a/of-simple-match-card/article/div/div[2]/time")))
+        partida.data = partida.data.get_attribute('datetime')
+        partida.data = partida.data.split("T")[0]
+        partida.data = partida.data.split("-")
+        partida.data = datetime.date(int(partida.data[0]),int(partida.data[1]),int(partida.data[2]))
+        # print(f"'{str(partida.data)}' == '{'2023-03-27'}', {str(partida.data) == ultimaData}")
+    except:
+        print("jooj")
 
-print(pontBotafogo)
+    if ultimaData != str(partida.data):
+        partida.golsPro = WebDriverWait(nav,delay).until(EC.presence_of_element_located((By.XPATH, "/html/body/of-root/div/main/of-entity-stream/section/of-xpa-layout-entity/section[6]/of-xpa-switch-entity/section/of-match-cards-lists-appender/div/of-match-cards-list[1]/ul/li[1]/of-match-card/a/of-simple-match-card/article/div/div[1]/of-simple-match-card-team[1]/div/span[2]")))
+        partida.golsContra = WebDriverWait(nav, delay).until(EC.presence_of_element_located((By.XPATH, "/html/body/of-root/div/main/of-entity-stream/section/of-xpa-layout-entity/section[6]/of-xpa-switch-entity/section/of-match-cards-lists-appender/div/of-match-cards-list[1]/ul/li[1]/of-match-card/a/of-simple-match-card/article/div/div[1]/of-simple-match-card-team[2]/div/span[2]")))
+        partida.placar = partida.golsPro.get_attribute('innerText') + " x " + partida.golsContra.get_attribute('innerText')
+        partida.adversario = WebDriverWait(nav, delay).until(EC.presence_of_element_located((By.XPATH,"/html/body/of-root/div/main/of-entity-stream/section/of-xpa-layout-entity/section[6]/of-xpa-switch-entity/section/of-match-cards-lists-appender/div/of-match-cards-list[1]/ul/li[1]/of-match-card/a/of-simple-match-card/article/div/div[1]/of-simple-match-card-team[2]/div/span[1]")))
+        partida.adversario = partida.adversario.get_attribute('innerText')
+        
+        partida.competicao = WebDriverWait(nav, delay).until(EC.presence_of_element_located((By.XPATH,"/html/body/of-root/div/main/of-entity-stream/section/of-xpa-layout-entity/section[6]/of-xpa-switch-entity/section/of-match-cards-lists-appender/div/of-match-cards-list[1]/ul/li[1]/of-match-card/a/of-simple-match-card/article/footer/div/p")))
+        partida.competicao = partida.competicao.get_attribute('innerText')
+        atualizarUltimo = open("./ultimo.txt","w")
+        atualizarUltimo.write(str(partida.data))
+        atualizarUltimo.close()
+        print("Botafogoooooooooooooooo:",partida.placar, partida.adversario, partida.data, partida.competicao)
+    else:
+        print("Mesma partida")
+    
+    sleep(10)

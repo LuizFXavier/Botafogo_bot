@@ -1,6 +1,7 @@
 class Partida:
-    def __init__(self, placar, adversario, golsPro, golsContra, competicao, rodada):
+    def __init__(self):
         
+        self.data = None
         self.placar = None
         self.adversario = None
         self.golsPro = None
