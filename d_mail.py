@@ -2,19 +2,14 @@ import os
 from email import message
 import smtplib
 
-def enviar_email():
-    corpo_email = """
-    <p>There is a Flick on my Flo
-    </p>
-    <audio src='./mito.mp3'> </audio>
-    """
+def enviar_email(senha, remetente, destinatarios, corpo_email):
     
     msg = message.Message()
-    msg['Subject'] = "Lel"
-    msg["From"] = "zap422238@gmail.com"
-    destinatarios = ["wilkersebastian1991@gmail.com","zap422238@gmail.com"]
+    msg['Subject'] = "BOTAFOGO"
+    # msg["From"] = "xavier_felipe@ufms.br"
+    msg["From"] = remetente
+    # destinatarios = ["wilkersebastian1991@gmail.com","zap422238@gmail.com","anajuliafigueiredo68@gmail.com",""]
     msg["To"] = ", ".join(destinatarios)
-    senha = os.environ["senha"]
     msg.add_header("Content-Type", "text/html")
     msg.set_payload(corpo_email)
 
