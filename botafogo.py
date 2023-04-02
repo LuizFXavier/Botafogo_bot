@@ -43,4 +43,4 @@ while True:
         d_mail.enviar_email(os.environ["senha"],os.environ["remetente"],os.environ["destinatarios"].split(","), mensagem)
     else:
         print("Partida nova não encontrada")
-    sleep(hora * 12)
+    sleep(hora * 4)
