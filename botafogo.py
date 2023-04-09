@@ -9,7 +9,7 @@ hora = 3600
 
 while True:
     partida = bot_a_fogo.pesquisar()
-
+    
     flamengo = ""
 
     if(partida):
@@ -35,7 +35,7 @@ while True:
         <p>
         {partida.competicao} ({partida.data}):<br><br>
 
-        <strong>Botafogo</strong> {partida.placar} {partida.adversario}<br><br>
+        <strong>Botafogo</strong> {partida.placar} {partida.time2}<br><br>
 
         {flamengo}
         </p>
